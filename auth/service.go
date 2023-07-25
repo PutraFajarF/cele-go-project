@@ -7,20 +7,20 @@ import (
 )
 
 type Service interface {
-	GenerateToken(userID int) (string, error)
+	GenerateToken(userID uint) (string, error)
 	ValidateToken(encodedToken string) (*jwt.Token, error)
 }
 
-type jwtService struct {
+type JwtService struct {
 }
 
-func NewService() *jwtService {
-	return &jwtService{}
+func NewService() *JwtService {
+	return &JwtService{}
 }
 
 var SECRET_KEY = []byte("rahasia")
 
-func (s *jwtService) GenerateToken(userID int) (string, error) {
+func (s *JwtService) GenerateToken(userID uint) (string, error) {
 	claim := jwt.MapClaims{}
 	claim["user_id"] = userID
 
@@ -34,7 +34,7 @@ func (s *jwtService) GenerateToken(userID int) (string, error) {
 	return signedToken, nil
 }
 
-func (s *jwtService) ValidateToken(encodedToken string) (*jwt.Token, error) {
+func (s *JwtService) ValidateToken(encodedToken string) (*jwt.Token, error) {
 	token, err := jwt.Parse(encodedToken, func(token *jwt.Token) (interface{}, error) {
 		_, ok := token.Method.(*jwt.SigningMethodHMAC)
 

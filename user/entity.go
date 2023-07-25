@@ -1,14 +1,12 @@
 package user
 
-import "time"
+import "gorm.io/gorm"
 
 type User struct {
-	ID          int
-	Name        string
-	NoHandphone string
-	Email       string
-	Password    string
-	Role        string
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	gorm.Model
+	Name        string `json:"name"`
+	NoHandphone string `json:"no_handphone"`
+	Email       string `json:"email"`
+	Password    string `json:"password"`
+	Role        string `json:"role"`
 }

@@ -4,42 +4,67 @@ import (
 	"log"
 	"net/http"
 	"project-go/auth"
+	"project-go/book_transaction"
+	"project-go/config"
 	"project-go/handler"
 	"project-go/helper"
+	"project-go/master_author"
+	"project-go/master_book"
+	"project-go/routes"
 	"project-go/user"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
 func main() {
-	dataConn := "host=localhost user=postgres password=ktl123 dbname=cele_go_project port=5432 sslmode=disable TimeZone=Asia/Shanghai"
-	db, err := gorm.Open(postgres.Open(dataConn), &gorm.Config{})
+	config.LoadAppConfig()
+	db, err := config.Connect()
+
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	log.Print("Database sukses terkoneksi")
+
+	err = config.Migrate()
+
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
 	// call repository
 	userRepository := user.NewRepository(db)
+	masterBookRepository := master_book.NewRepository(db)
+	masterAuthorRepository := master_author.NewRepository(db)
+	bookTransactionRepository := book_transaction.NewRepository(db)
 
 	// call service
 	userService := user.NewService(userRepository)
 	authService := auth.NewService()
+	masterBookService := master_book.NewService(masterBookRepository)
+	masterAuthorService := master_author.NewService(masterAuthorRepository)
+	bookTransactionService := book_transaction.NewService(bookTransactionRepository)
 
 	// call handler
 	userHandler := handler.NewUserHandler(userService, authService)
+	masterBookHandler := handler.NewMasterBookHandler(masterBookService)
+	masterAuthorHandler := handler.NewMasterAuthorHandler(masterAuthorService)
+	bookTransactionhandler := handler.NewBookTransactionHandler(bookTransactionService)
 
 	// gin router
 	router := gin.Default()
 
 	// api versioning
-	api := router.Group("/api/v1")
-	api.POST("/register", userHandler.RegisterUser)
-	api.POST("/login", userHandler.Login)
-	api.POST("/check-email", userHandler.CheckAvailabilityEmail)
+	userApi := router.Group("/api/v1/user")
+	masterApi := router.Group("/api/v1/master")
+	transactionApi := router.Group("/api/v1/transaction")
+
+	routes.UserRoutes(userApi, userHandler)
+	routes.MasterBookRoutes(masterApi, masterBookHandler)
+	routes.MasterAuthorRoutes(masterApi, masterAuthorHandler)
+	routes.BookTransactionRoutes(transactionApi, bookTransactionhandler)
 
 	router.Run()
 }

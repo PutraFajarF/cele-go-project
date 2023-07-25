@@ -9,16 +9,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type userHandler struct {
+type UserHandler struct {
 	userService user.Service
 	authService auth.Service
 }
 
-func NewUserHandler(userService user.Service, authService auth.Service) *userHandler {
-	return &userHandler{userService, authService}
+func NewUserHandler(userService user.Service, authService auth.Service) *UserHandler {
+	return &UserHandler{userService, authService}
 }
 
-func (u *userHandler) RegisterUser(c *gin.Context) {
+func (u *UserHandler) RegisterUser(c *gin.Context) {
 	// Tangkap input dari user
 	// map input dari user ke struct RegisterUserInput
 	// struct diatas kita passing sebagai parameter service
@@ -54,7 +54,7 @@ func (u *userHandler) RegisterUser(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-func (u *userHandler) Login(c *gin.Context) {
+func (u *UserHandler) Login(c *gin.Context) {
 	// user masukan input (email & password)
 	// input ditangkap handler
 	// mapping input user ke input struct
@@ -95,7 +95,7 @@ func (u *userHandler) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-func (u *userHandler) CheckAvailabilityEmail(c *gin.Context) {
+func (u *UserHandler) CheckAvailabilityEmail(c *gin.Context) {
 	// ada input email dari user
 	// input email dimapping ke struct input
 	// struct input dipassing ke service
