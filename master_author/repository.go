@@ -58,7 +58,7 @@ func (r *repository) StoreMasterAuthor(masterAuthor entities.MasterAuthor) (enti
 func (r *repository) UpdateMasterAuthor(ID string, input MasterAuthorInput) (entities.MasterAuthor, error) {
 	var masterAuthor entities.MasterAuthor
 
-	err := r.db.Preload("MasterBook").Where("id = ?", ID).First(masterAuthor).Error
+	err := r.db.Preload("MasterBook").Where("id = ?", ID).First(&masterAuthor).Error
 
 	if err != nil {
 		return masterAuthor, err

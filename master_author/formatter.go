@@ -9,6 +9,7 @@ type MasterAuthorFormatter struct {
 
 func FormatMasterAuthor(masterAuthor entities.MasterAuthor) MasterAuthorFormatter {
 	formatter := MasterAuthorFormatter{
+		ID:   int(masterAuthor.ID),
 		Name: masterAuthor.Name,
 	}
 

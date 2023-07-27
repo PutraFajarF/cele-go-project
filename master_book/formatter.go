@@ -11,6 +11,7 @@ type MasterBookFormatter struct {
 
 func FormatMasterBook(masterBook entities.MasterBook) MasterBookFormatter {
 	formatter := MasterBookFormatter{
+		ID:     int(masterBook.ID),
 		Name:   masterBook.Name,
 		Amount: masterBook.Amount,
 		Price:  masterBook.Price,

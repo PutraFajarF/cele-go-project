@@ -26,7 +26,7 @@ func NewRepository(db *gorm.DB) *repository {
 func (r *repository) GetMasterBook() ([]entities.MasterBook, error) {
 	var mb []entities.MasterBook
 
-	if err := r.db.Find(&mb).Error; err != nil {
+	if err := r.db.Preload("BookTransaction").Find(&mb).Error; err != nil {
 		return nil, err
 	}
 
@@ -36,7 +36,7 @@ func (r *repository) GetMasterBook() ([]entities.MasterBook, error) {
 func (r *repository) FindMasterBookByID(ID string) (entities.MasterBook, error) {
 	var masterBook entities.MasterBook
 
-	err := r.db.Where("id = ?", ID).Find(&masterBook).Error
+	err := r.db.Preload("BookTransaction").Where("id = ?", ID).Find(&masterBook).Error
 	if err != nil {
 		return masterBook, err
 	}

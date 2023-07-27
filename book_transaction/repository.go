@@ -2,6 +2,7 @@ package book_transaction
 
 import (
 	"errors"
+	"fmt"
 	"project-go/entities"
 	"time"
 
@@ -98,23 +99,32 @@ func (r *repository) UpdateBookTransaction(ID string, input BookTransactionInput
 		return bookTransaction, err
 	}
 
-	if errors.Is(err, gorm.ErrRecordNotFound) != true {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return bookTransaction, errors.New("Data buku tidak ditemukan")
 	}
 
+	masterBook.Amount += bookTransaction.TotalBook
 	if masterBook.Amount >= input.TotalBook {
 		masterBook.Amount -= input.TotalBook
-		bookTransaction.TotalPrice = masterBook.Amount * bookTransaction.TotalBook
+		bookTransaction.TotalPrice = masterBook.Price * input.TotalBook
 	} else {
 		return entities.BookTransaction{}, errors.New("Pesanan melebihi jumlah stok buku")
 	}
 
-	bookTransaction.BookID = masterBook.ID
+	bookTransaction.BookID = input.BookID
 	bookTransaction.UserID = input.UserID
 	bookTransaction.TotalBook = input.TotalBook
 	bookTransaction.UpdatedAt = time.Now()
 
 	err = r.db.Updates(&bookTransaction).Error
+
+	if err != nil {
+		return bookTransaction, err
+	}
+
+	fmt.Println("test", masterBook.Amount)
+
+	err = r.db.Model(&masterBook).Update("amount", masterBook.Amount).Error
 
 	if err != nil {
 		return bookTransaction, err

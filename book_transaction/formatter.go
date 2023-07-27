@@ -10,18 +10,15 @@ type BookTransactionFormatter struct {
 	BookID     uint `json:"book_id"`
 	TotalBook  int  `json:"total_book"`
 	TotalPrice int  `json:"total_price"`
-	User       *[]entities.User
-	Book       *[]entities.MasterBook
 }
 
 func FormatBookTransaction(bookTransaction entities.BookTransaction) BookTransactionFormatter {
 	formatter := BookTransactionFormatter{
+		ID:         int(bookTransaction.ID),
 		BookID:     bookTransaction.BookID,
 		UserID:     bookTransaction.UserID,
 		TotalBook:  bookTransaction.TotalBook,
 		TotalPrice: bookTransaction.TotalPrice,
-		User:       &[]entities.User{},
-		Book:       &[]entities.MasterBook{},
 	}
 
 	return formatter
