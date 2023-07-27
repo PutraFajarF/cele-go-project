@@ -46,7 +46,7 @@ func (r *repository) FindMasterBookByID(ID string) (MasterBook, error) {
 
 func (r *repository) StoreMasterBook(masterBook MasterBook) (MasterBook, error) {
 	var masterAuthor master_author.MasterAuthor
-	err := r.db.Table("master_authors").Where("id = ?", masterBook.AuthorID).First(masterAuthor).Error
+	err := r.db.Table("master_authors").Where("id = ?", masterBook.AuthorID).First(&masterAuthor).Error
 
 	if err != nil {
 		return masterBook, err
@@ -69,7 +69,7 @@ func (r *repository) UpdateMasterBook(ID string, input MasterBookInput) (MasterB
 	var masterBook MasterBook
 	var masterAuthor master_author.MasterAuthor
 
-	err := r.db.Where("id = ?", ID).First(masterBook).Error
+	err := r.db.Where("id = ?", ID).First(&masterBook).Error
 
 	if err != nil {
 		return masterBook, err
@@ -79,7 +79,7 @@ func (r *repository) UpdateMasterBook(ID string, input MasterBookInput) (MasterB
 		return masterBook, errors.New("Data buku tidak ditemukan")
 	}
 
-	err = r.db.Table("master_authors").Where("id = ?", masterBook.ID).First(masterAuthor).Error
+	err = r.db.Table("master_authors").Where("id = ?", masterBook.ID).First(&masterAuthor).Error
 
 	if err != nil {
 		return masterBook, err

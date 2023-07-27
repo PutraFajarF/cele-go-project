@@ -47,7 +47,7 @@ func (r *repository) FindBookTransactionByID(ID string) (BookTransaction, error)
 
 func (r *repository) StoreBookTransaction(bookTransaction BookTransaction) (BookTransaction, error) {
 	var masterBook master_book.MasterBook
-	err := r.db.Table("master_books").Where("id", bookTransaction.BookID).First(masterBook).Error
+	err := r.db.Table("master_books").Where("id", bookTransaction.BookID).First(&masterBook).Error
 
 	if err != nil {
 		return bookTransaction, err
@@ -82,7 +82,7 @@ func (r *repository) StoreBookTransaction(bookTransaction BookTransaction) (Book
 func (r *repository) UpdateBookTransaction(ID string, input BookTransactionInput) (BookTransaction, error) {
 	var masterBook master_book.MasterBook
 	var bookTransaction BookTransaction
-	err := r.db.Where("id = ?", ID).First(bookTransaction).Error
+	err := r.db.Where("id = ?", ID).First(&bookTransaction).Error
 
 	if err != nil {
 		return bookTransaction, err
@@ -92,7 +92,7 @@ func (r *repository) UpdateBookTransaction(ID string, input BookTransactionInput
 		return bookTransaction, errors.New("Data transaksi tidak ditemukan")
 	}
 
-	err = r.db.Table("master_books").Where("id", bookTransaction.BookID).First(masterBook).Error
+	err = r.db.Table("master_books").Where("id", bookTransaction.BookID).First(&masterBook).Error
 
 	if err != nil {
 		return bookTransaction, err
