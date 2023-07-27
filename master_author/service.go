@@ -2,14 +2,15 @@ package master_author
 
 import (
 	"errors"
+	"project-go/entities"
 	"time"
 )
 
 type Service interface {
-	GetAuthors() ([]MasterAuthor, error)
-	GetAuthorById(ID string) (MasterAuthor, error)
-	CreateMasterAuthor(input MasterAuthorInput) (MasterAuthor, error)
-	EditMasterAuthor(ID string, input MasterAuthorInput) (MasterAuthor, error)
+	GetAuthors() ([]entities.MasterAuthor, error)
+	GetAuthorById(ID string) (entities.MasterAuthor, error)
+	CreateMasterAuthor(input MasterAuthorInput) (entities.MasterAuthor, error)
+	EditMasterAuthor(ID string, input MasterAuthorInput) (entities.MasterAuthor, error)
 }
 
 type service struct {
@@ -20,17 +21,17 @@ func NewService(repository Repository) *service {
 	return &service{repository}
 }
 
-func (s *service) GetAuthors() ([]MasterAuthor, error) {
+func (s *service) GetAuthors() ([]entities.MasterAuthor, error) {
 	authors, err := s.repository.GetMasterAuthor()
 
 	if err != nil {
-		return []MasterAuthor{}, err
+		return []entities.MasterAuthor{}, err
 	}
 
 	return authors, err
 }
 
-func (s *service) GetAuthorById(ID string) (MasterAuthor, error) {
+func (s *service) GetAuthorById(ID string) (entities.MasterAuthor, error) {
 	author, err := s.repository.FindMasterAuthorByID(ID)
 
 	if err != nil {
@@ -44,8 +45,8 @@ func (s *service) GetAuthorById(ID string) (MasterAuthor, error) {
 	return author, nil
 }
 
-func (s *service) CreateMasterAuthor(input MasterAuthorInput) (MasterAuthor, error) {
-	var masterAuthor MasterAuthor
+func (s *service) CreateMasterAuthor(input MasterAuthorInput) (entities.MasterAuthor, error) {
+	var masterAuthor entities.MasterAuthor
 	masterAuthor.Name = input.Name
 	masterAuthor.CreatedAt = time.Now()
 
@@ -57,7 +58,7 @@ func (s *service) CreateMasterAuthor(input MasterAuthorInput) (MasterAuthor, err
 	return newAuthor, nil
 }
 
-func (s *service) EditMasterAuthor(ID string, input MasterAuthorInput) (MasterAuthor, error) {
+func (s *service) EditMasterAuthor(ID string, input MasterAuthorInput) (entities.MasterAuthor, error) {
 	updateAuthor, err := s.repository.UpdateMasterAuthor(ID, input)
 
 	if err != nil {

@@ -2,17 +2,17 @@ package book_transaction
 
 import (
 	"errors"
-	"project-go/master_book"
+	"project-go/entities"
 	"time"
 
 	"gorm.io/gorm"
 )
 
 type Repository interface {
-	GetBookTransaction() ([]BookTransaction, error)
-	FindBookTransactionByID(ID string) (BookTransaction, error)
-	StoreBookTransaction(bookTransaction BookTransaction) (BookTransaction, error)
-	UpdateBookTransaction(ID string, input BookTransactionInput) (BookTransaction, error)
+	GetBookTransaction() ([]entities.BookTransaction, error)
+	FindBookTransactionByID(ID string) (entities.BookTransaction, error)
+	StoreBookTransaction(bookTransaction entities.BookTransaction) (entities.BookTransaction, error)
+	UpdateBookTransaction(ID string, input BookTransactionInput) (entities.BookTransaction, error)
 	// DeleteMasterBook(masterBook MasterBook, ID int) (MasterBook, error)
 }
 
@@ -24,8 +24,8 @@ func NewRepository(db *gorm.DB) *repository {
 	return &repository{db}
 }
 
-func (r *repository) GetBookTransaction() ([]BookTransaction, error) {
-	var bt []BookTransaction
+func (r *repository) GetBookTransaction() ([]entities.BookTransaction, error) {
+	var bt []entities.BookTransaction
 
 	if err := r.db.Find(&bt).Error; err != nil {
 		return nil, err
@@ -34,8 +34,8 @@ func (r *repository) GetBookTransaction() ([]BookTransaction, error) {
 	return bt, nil
 }
 
-func (r *repository) FindBookTransactionByID(ID string) (BookTransaction, error) {
-	var bookTransaction BookTransaction
+func (r *repository) FindBookTransactionByID(ID string) (entities.BookTransaction, error) {
+	var bookTransaction entities.BookTransaction
 
 	err := r.db.Where("id = ?", ID).Find(&bookTransaction).Error
 	if err != nil {
@@ -45,15 +45,15 @@ func (r *repository) FindBookTransactionByID(ID string) (BookTransaction, error)
 	return bookTransaction, nil
 }
 
-func (r *repository) StoreBookTransaction(bookTransaction BookTransaction) (BookTransaction, error) {
-	var masterBook master_book.MasterBook
-	err := r.db.Table("master_books").Where("id", bookTransaction.BookID).First(&masterBook).Error
+func (r *repository) StoreBookTransaction(bookTransaction entities.BookTransaction) (entities.BookTransaction, error) {
+	var masterBook entities.MasterBook
+	err := r.db.Where("id", bookTransaction.BookID).First(&masterBook).Error
 
 	if err != nil {
 		return bookTransaction, err
 	}
 
-	if errors.Is(err, gorm.ErrRecordNotFound) != true {
+	if errors.Is(err, gorm.ErrRecordNotFound) == true {
 		return bookTransaction, errors.New("Data buku tidak ditemukan")
 	}
 
@@ -79,9 +79,9 @@ func (r *repository) StoreBookTransaction(bookTransaction BookTransaction) (Book
 	return bookTransaction, nil
 }
 
-func (r *repository) UpdateBookTransaction(ID string, input BookTransactionInput) (BookTransaction, error) {
-	var masterBook master_book.MasterBook
-	var bookTransaction BookTransaction
+func (r *repository) UpdateBookTransaction(ID string, input BookTransactionInput) (entities.BookTransaction, error) {
+	var masterBook entities.MasterBook
+	var bookTransaction entities.BookTransaction
 	err := r.db.Where("id = ?", ID).First(&bookTransaction).Error
 
 	if err != nil {
@@ -106,7 +106,7 @@ func (r *repository) UpdateBookTransaction(ID string, input BookTransactionInput
 		masterBook.Amount -= input.TotalBook
 		bookTransaction.TotalPrice = masterBook.Amount * bookTransaction.TotalBook
 	} else {
-		return BookTransaction{}, errors.New("Pesanan melebihi jumlah stok buku")
+		return entities.BookTransaction{}, errors.New("Pesanan melebihi jumlah stok buku")
 	}
 
 	bookTransaction.BookID = masterBook.ID

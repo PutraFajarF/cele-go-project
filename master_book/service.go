@@ -2,13 +2,14 @@ package master_book
 
 import (
 	"errors"
+	"project-go/entities"
 )
 
 type Service interface {
-	GetBooks() ([]MasterBook, error)
-	GetBookById(ID string) (MasterBook, error)
-	CreateMasterBook(input MasterBookInput) (MasterBook, error)
-	EditMasterBook(ID string, input MasterBookInput) (MasterBook, error)
+	GetBooks() ([]entities.MasterBook, error)
+	GetBookById(ID string) (entities.MasterBook, error)
+	CreateMasterBook(input MasterBookInput) (entities.MasterBook, error)
+	EditMasterBook(ID string, input MasterBookInput) (entities.MasterBook, error)
 }
 
 type service struct {
@@ -19,17 +20,17 @@ func NewService(repository Repository) *service {
 	return &service{repository}
 }
 
-func (s *service) GetBooks() ([]MasterBook, error) {
+func (s *service) GetBooks() ([]entities.MasterBook, error) {
 	books, err := s.repository.GetMasterBook()
 
 	if err != nil {
-		return []MasterBook{}, err
+		return []entities.MasterBook{}, err
 	}
 
 	return books, err
 }
 
-func (s *service) GetBookById(ID string) (MasterBook, error) {
+func (s *service) GetBookById(ID string) (entities.MasterBook, error) {
 	user, err := s.repository.FindMasterBookByID(ID)
 	if err != nil {
 		return user, err
@@ -42,8 +43,8 @@ func (s *service) GetBookById(ID string) (MasterBook, error) {
 	return user, nil
 }
 
-func (s *service) CreateMasterBook(input MasterBookInput) (MasterBook, error) {
-	var masterBook MasterBook
+func (s *service) CreateMasterBook(input MasterBookInput) (entities.MasterBook, error) {
+	var masterBook entities.MasterBook
 	masterBook.Name = input.Name
 	masterBook.Amount = input.Amount
 	masterBook.Price = input.Price
@@ -58,7 +59,7 @@ func (s *service) CreateMasterBook(input MasterBookInput) (MasterBook, error) {
 	return newBook, nil
 }
 
-func (s *service) EditMasterBook(ID string, input MasterBookInput) (MasterBook, error) {
+func (s *service) EditMasterBook(ID string, input MasterBookInput) (entities.MasterBook, error) {
 	updateBook, err := s.repository.UpdateMasterBook(ID, input)
 
 	if err != nil {

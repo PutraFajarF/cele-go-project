@@ -1,4 +1,4 @@
-package master_author
+package entities
 
 import (
 	"gorm.io/gorm"

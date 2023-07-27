@@ -2,14 +2,15 @@ package book_transaction
 
 import (
 	"errors"
+	"project-go/entities"
 	"time"
 )
 
 type Service interface {
-	GetBookTransactions() ([]BookTransaction, error)
-	GetTransactionById(ID string) (BookTransaction, error)
-	CreateBookTransaction(input BookTransactionInput) (BookTransaction, error)
-	UpdateBookTransaction(ID string, input BookTransactionInput) (BookTransaction, error)
+	GetBookTransactions() ([]entities.BookTransaction, error)
+	GetTransactionById(ID string) (entities.BookTransaction, error)
+	CreateBookTransaction(input BookTransactionInput) (entities.BookTransaction, error)
+	UpdateBookTransaction(ID string, input BookTransactionInput) (entities.BookTransaction, error)
 }
 
 type service struct {
@@ -20,17 +21,17 @@ func NewService(repository Repository) *service {
 	return &service{repository}
 }
 
-func (s *service) GetBookTransactions() ([]BookTransaction, error) {
+func (s *service) GetBookTransactions() ([]entities.BookTransaction, error) {
 	bookTransactions, err := s.repository.GetBookTransaction()
 
 	if err != nil {
-		return []BookTransaction{}, err
+		return []entities.BookTransaction{}, err
 	}
 
 	return bookTransactions, err
 }
 
-func (s *service) GetTransactionById(ID string) (BookTransaction, error) {
+func (s *service) GetTransactionById(ID string) (entities.BookTransaction, error) {
 	bookTransaction, err := s.repository.FindBookTransactionByID(ID)
 	if err != nil {
 		return bookTransaction, err
@@ -43,8 +44,8 @@ func (s *service) GetTransactionById(ID string) (BookTransaction, error) {
 	return bookTransaction, nil
 }
 
-func (s *service) CreateBookTransaction(input BookTransactionInput) (BookTransaction, error) {
-	var bookTransaction BookTransaction
+func (s *service) CreateBookTransaction(input BookTransactionInput) (entities.BookTransaction, error) {
+	var bookTransaction entities.BookTransaction
 	bookTransaction.TotalBook = input.TotalBook
 	bookTransaction.TotalPrice = input.TotalPrice
 	bookTransaction.BookID = input.BookID
@@ -60,7 +61,7 @@ func (s *service) CreateBookTransaction(input BookTransactionInput) (BookTransac
 	return newTransaction, nil
 }
 
-func (s *service) UpdateBookTransaction(ID string, input BookTransactionInput) (BookTransaction, error) {
+func (s *service) UpdateBookTransaction(ID string, input BookTransactionInput) (entities.BookTransaction, error) {
 	newUser, err := s.repository.UpdateBookTransaction(ID, input)
 	if err != nil {
 		return newUser, err
