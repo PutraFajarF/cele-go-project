@@ -3,14 +3,15 @@ package user
 import (
 	"errors"
 
+	"project-go/entities"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type Service interface {
-	RegisterUser(input RegisterUserInput) (User, error)
-	LoginUser(input LoginInput) (User, error)
+	RegisterUser(input RegisterUserInput) (entities.User, error)
+	LoginUser(input LoginInput) (entities.User, error)
 	IsEmailAvailable(input CheckEmailInput) (bool, error)
-	GetUserByID(ID int) (User, error)
+	GetUserByID(ID int) (entities.User, error)
 }
 
 type service struct {
@@ -21,8 +22,8 @@ func NewService(repository Repository) *service {
 	return &service{repository}
 }
 
-func (s *service) RegisterUser(input RegisterUserInput) (User, error) {
-	var user User
+func (s *service) RegisterUser(input RegisterUserInput) (entities.User, error) {
+	var user entities.User
 	user.Name = input.Name
 	user.Email = input.Email
 	user.NoHandphone = input.NoHandphone
@@ -52,7 +53,7 @@ func (s *service) RegisterUser(input RegisterUserInput) (User, error) {
 	return newUser, nil
 }
 
-func (s *service) LoginUser(input LoginInput) (User, error) {
+func (s *service) LoginUser(input LoginInput) (entities.User, error) {
 	email := input.Email
 	password := input.Password
 
@@ -89,7 +90,7 @@ func (s *service) IsEmailAvailable(input CheckEmailInput) (bool, error) {
 	return false, nil
 }
 
-func (s *service) GetUserByID(ID int) (User, error) {
+func (s *service) GetUserByID(ID int) (entities.User, error) {
 	user, err := s.repository.FindUserByID(ID)
 	if err != nil {
 		return user, err

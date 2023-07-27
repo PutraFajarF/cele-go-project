@@ -1,17 +1,15 @@
 package entities
 
 import (
-	"project-go/user"
-
 	"gorm.io/gorm"
 )
 
 type BookTransaction struct {
 	gorm.Model
-	UserID     uint       `json:"user_id"`
-	BookID     uint       `json:"book_id"`
-	TotalBook  int        `json:"total_book"`
-	TotalPrice int        `json:"total_price"`
-	User       user.User  `json:"user" gorm:"foreignKey:UserID"`
-	Book       MasterBook `json:"book" gorm:"foreignKey:BookID"`
+	UserID     uint `json:"user_id" gorm:"foreignKey:ID"`
+	BookID     uint `json:"book_id" gorm:"foreignKey:ID"`
+	TotalBook  int  `json:"total_book"`
+	TotalPrice int  `json:"total_price"`
+	// User       User       `json:"users" gorm:"foreignKey:UserID;references:ID"`
+	// Book       MasterBook `json:"master_books" gorm:"foreignKey:BookID;references:ID"`
 }

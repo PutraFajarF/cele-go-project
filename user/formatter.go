@@ -1,5 +1,7 @@
 package user
 
+import "project-go/entities"
+
 type UserFormatter struct {
 	ID          uint   `json:"id"`
 	Name        string `json:"name"`
@@ -8,7 +10,7 @@ type UserFormatter struct {
 	Token       string `json:"token"`
 }
 
-func FormatUser(user User, token string) UserFormatter {
+func FormatUser(user entities.User, token string) UserFormatter {
 	formatter := UserFormatter{
 		ID:          user.ID,
 		Name:        user.Name,

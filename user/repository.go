@@ -1,12 +1,15 @@
 package user
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+	"project-go/entities"
+)
 
 type Repository interface {
-	CreateUser(user User) (User, error)
-	FindUserByEmail(email string) (User, error)
-	FindUserByID(ID int) (User, error)
-	UpdateUser(user User) (User, error)
+	CreateUser(entities.User) (entities.User, error)
+	FindUserByEmail(email string) (entities.User, error)
+	FindUserByID(ID int) (entities.User, error)
+	UpdateUser(user entities.User) (entities.User, error)
 }
 
 type repository struct {
@@ -17,7 +20,7 @@ func NewRepository(db *gorm.DB) *repository {
 	return &repository{db}
 }
 
-func (r *repository) CreateUser(user User) (User, error) {
+func (r *repository) CreateUser(user entities.User) (entities.User, error) {
 	err := r.db.Create(&user).Error
 	if err != nil {
 		return user, err
@@ -26,8 +29,8 @@ func (r *repository) CreateUser(user User) (User, error) {
 	return user, nil
 }
 
-func (r *repository) FindUserByEmail(email string) (User, error) {
-	var user User
+func (r *repository) FindUserByEmail(email string) (entities.User, error) {
+	var user entities.User
 
 	err := r.db.Where("email = ?", email).Find(&user).Error
 	if err != nil {
@@ -37,8 +40,8 @@ func (r *repository) FindUserByEmail(email string) (User, error) {
 	return user, nil
 }
 
-func (r *repository) FindUserByID(ID int) (User, error) {
-	var user User
+func (r *repository) FindUserByID(ID int) (entities.User, error) {
+	var user entities.User
 
 	err := r.db.Where("id = ?", ID).Find(&user).Error
 	if err != nil {
@@ -48,7 +51,7 @@ func (r *repository) FindUserByID(ID int) (User, error) {
 	return user, nil
 }
 
-func (r *repository) UpdateUser(user User) (User, error) {
+func (r *repository) UpdateUser(user entities.User) (entities.User, error) {
 	err := r.db.Save(&user).Error
 
 	if err != nil {

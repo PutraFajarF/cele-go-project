@@ -6,5 +6,6 @@ import (
 
 type MasterAuthor struct {
 	gorm.Model
-	Name string `json:"name"`
+	Name       string       `json:"name"`
+	MasterBook []MasterBook `gorm:"foreignKey:AuthorID;references:ID"`
 }

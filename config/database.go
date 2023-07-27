@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"project-go/entities"
-	"project-go/user"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -33,7 +32,7 @@ func Connect() (*gorm.DB, error) {
 
 func Migrate() error {
 	err := DB.AutoMigrate(
-		&user.User{},
+		&entities.User{},
 		&entities.MasterAuthor{},
 		&entities.MasterBook{},
 		&entities.BookTransaction{},
@@ -43,14 +42,14 @@ func Migrate() error {
 		return err
 	}
 
-	DB.Migrator().CreateConstraint(&entities.MasterBook{}, "MasterAuthors")
-	DB.Migrator().CreateConstraint(&entities.MasterBook{}, "fk_master_books_authors")
+	DB.Migrator().CreateConstraint(&entities.MasterAuthor{}, "MasterBooks")
+	DB.Migrator().CreateConstraint(&entities.MasterAuthor{}, "fk_master_authors_master_books")
 
-	DB.Migrator().CreateConstraint(&entities.BookTransaction{}, "Users")
-	DB.Migrator().CreateConstraint(&entities.BookTransaction{}, "fk_book_transactions_users")
+	DB.Migrator().CreateConstraint(&entities.User{}, "BookTransactions")
+	DB.Migrator().CreateConstraint(&entities.User{}, "fk_users_book_transactions")
 
-	DB.Migrator().CreateConstraint(&entities.BookTransaction{}, "MasterBooks")
-	DB.Migrator().CreateConstraint(&entities.BookTransaction{}, "fk_book_transactions_master_books")
+	DB.Migrator().CreateConstraint(&entities.MasterBook{}, "BookTransactions")
+	DB.Migrator().CreateConstraint(&entities.MasterBook{}, "fk_master_books_book_transactions")
 
 	log.Println("Database Migration Completed...")
 

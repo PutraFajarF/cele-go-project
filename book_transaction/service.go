@@ -47,7 +47,6 @@ func (s *service) GetTransactionById(ID string) (entities.BookTransaction, error
 func (s *service) CreateBookTransaction(input BookTransactionInput) (entities.BookTransaction, error) {
 	var bookTransaction entities.BookTransaction
 	bookTransaction.TotalBook = input.TotalBook
-	bookTransaction.TotalPrice = input.TotalPrice
 	bookTransaction.BookID = input.BookID
 	bookTransaction.UserID = input.UserID
 	bookTransaction.CreatedAt = time.Now()
