@@ -27,7 +27,7 @@ func NewRepository(db *gorm.DB) *repository {
 func (r *repository) GetMasterAuthor() ([]entities.MasterAuthor, error) {
 	var ma []entities.MasterAuthor
 
-	if err := r.db.Find(&ma).Error; err != nil {
+	if err := r.db.Preload("MasterBook").Find(&ma).Error; err != nil {
 		return nil, err
 	}
 
@@ -37,7 +37,7 @@ func (r *repository) GetMasterAuthor() ([]entities.MasterAuthor, error) {
 func (r *repository) FindMasterAuthorByID(ID string) (entities.MasterAuthor, error) {
 	var masterAuthor entities.MasterAuthor
 
-	err := r.db.Where("id = ?", ID).Find(&masterAuthor).Error
+	err := r.db.Preload("MasterBook").Where("id = ?", ID).Find(&masterAuthor).Error
 	if err != nil {
 		return masterAuthor, err
 	}
@@ -58,7 +58,7 @@ func (r *repository) StoreMasterAuthor(masterAuthor entities.MasterAuthor) (enti
 func (r *repository) UpdateMasterAuthor(ID string, input MasterAuthorInput) (entities.MasterAuthor, error) {
 	var masterAuthor entities.MasterAuthor
 
-	err := r.db.Where("id = ?", ID).First(masterAuthor).Error
+	err := r.db.Preload("MasterBook").Where("id = ?", ID).First(masterAuthor).Error
 
 	if err != nil {
 		return masterAuthor, err
